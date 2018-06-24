@@ -17,7 +17,6 @@ import { bindActionCreators } from 'redux';
 import { getAllPosts } from '../store/post/post.action'
 import HomePost  from '../components/HomePosts'
 
-
 class HomePage extends Component {
 
   async componentWillMount() {
@@ -34,53 +33,55 @@ class HomePage extends Component {
       console.log(error) 
     }
   }
-  
-  async logoutUser() {
+
+  async removeToken() {
     try {
       await AsyncStorage.removeItem('token')
       Alert.alert('Success', 'Logout Success')
     } catch (error) {
       console.log(error)
     }
-    this.props.navigation.navigate('Login')
   }
 
-  async showToken() {
-    try {
-      const token = await AsyncStorage.getItem('token')
-      Alert.alert('Token', token)
-    } catch (error) {
-      console.log(error)
-    }
+  logoutUser = () => {
+    this.removeToken()
+    this.props.navigation.goBack()
   }
 
   render() {
+    console.log(this.props.data.post)
     if (this.props.data.post.posts.length === 0) {
       return (
         <View style={styles.container}>
           <Header
-            leftComponent={{ icon: 'menu', color: '#fff'}}
+            leftComponent={<TouchableHighlight onPress={this.logoutUser}>
+                          <Icon
+                            name='sign-out'
+                            type='font-awesome'
+                            color='white'
+                          />
+                          </TouchableHighlight>
+            }
+            centerComponent={{text: 'HOME', style: { color: 'white', fontSize: 18, fontWeight: 'bold' }}}
             rightComponent={{ icon: 'add', color: '#fff', onPress: () => this.props.navigation.push('AddPost') }}
           />
           <Text style={styles.welcome}>No Post have been found. Add new post!</Text>
-          <View style={styles.footer}>
-            <TouchableHighlight style={styles.bottomButtons}>
-              <Icon 
-                name='sign-out'
-                type='font-awesome'
-                color='black'
-                onPress={this.logoutUser}
-              />
-            </TouchableHighlight>
-          </View>
         </View>
       );
     } else {
       return (
         <View>
           <Header
-            leftComponent={{ icon: 'menu', color: '#fff'}}
-            rightComponent={{ text: 'add', color: '#fff', onPress: () => this.logoutUser }}
+            leftComponent={<TouchableHighlight onPress={this.logoutUser}>
+                          <Icon
+                            name='sign-out'
+                            type='font-awesome'
+                            color='white'
+                          />
+                          </TouchableHighlight>
+            }
+            centerComponent={{text: 'HOME', style: { color: 'white', fontSize: 18, fontWeight: 'bold' }}}
+            rightComponent={{ icon: 'add', color: '#fff', onPress: () => this.props.navigation.push('AddPost') }}
           />
           <FlatList>
             <View>
@@ -129,7 +130,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return { data: state }
 }
 
