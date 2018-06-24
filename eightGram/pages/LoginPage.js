@@ -4,12 +4,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   Alert,
   AsyncStorage
-} from 'react-native'
-import axios from 'axios'
+} from 'react-native';
+import axios from 'axios';
+import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements'
 
 class LoginPage extends Component {
   constructor() {
@@ -69,20 +69,24 @@ class LoginPage extends Component {
           Mini social media app!
         </Text>
         <View>
-          <Text>Username: </Text>
-          <TextInput
-            onChangeText={(username) => this.setState({username})}
-            value={this.state.username}
-          />
-          <Text>Password: </Text>
-          <TextInput
+          <FormLabel>Username</FormLabel>
+          <FormInput onChangeText={(username) => this.setState({username})}/>
+          <FormLabel>Password</FormLabel>
+          <FormInput 
             onChangeText={(password) => this.setState({password})}
-            value={this.state.password}
             secureTextEntry={true}
           />
           <Button
+            small
+            title='LOGIN'
             onPress={this.loginUser}
-            title="Login"
+            backgroundColor='#6ED5FF'
+          />
+          <Button
+            small
+            title='REGISTER'
+            backgroundColor='#FF936E'
+            onPress={() => this.props.navigation.navigate('Register')}
           />
         </View>
       </View>
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   welcome: {
-    fontSize: 20,
+    fontSize: 50,
     textAlign: 'center',
     margin: 10,
   },

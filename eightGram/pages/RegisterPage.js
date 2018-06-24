@@ -6,8 +6,10 @@ import {
   TextInput,
   Text,
   StyleSheet,
-  Alert
-} from 'react-native'
+  Alert,
+  AsyncStorage
+} from 'react-native';
+import { FormLabel, FormInput, FormValidationMessage, Button, Header } from 'react-native-elements';
 
 class RegisterPage extends Component {
   constructor(){
@@ -19,6 +21,14 @@ class RegisterPage extends Component {
       confirm: '',
       firstname: '',
       lastname: ''
+    }
+  }
+
+  async setToken (token) {
+    try {
+      await AsyncStorage.setItem('token', token)
+    } catch (error) {
+      console.log(error)      
     }
   }
 
@@ -35,59 +45,44 @@ class RegisterPage extends Component {
         lastname: this.state.lastname
       })
       .then(function(response) {
-        Alert.alert('Success', response.data.message)
-        self.props.navigation.navigate('Home')
+          Alert.alert('Success', response.data.message)
+          self.setToken(response.data.token)
+          self.props.navigation.navigate('Home')
       })
       .catch(function(err) {
         Alert.alert('Error', 'Error while registering new user')
         console.log(err)
       })
-
     }
-
   }
 
   render() {
     return (
       <ScrollView>
         <View style={styles.container}>
-          <Text>Register New Account</Text>
-          <Text>Username: </Text>
-          <TextInput
-            onChangeText={(username) => this.setState({username})}
-            value={this.state.username}
-            secureTextEntry={true}
+          <Header
+            centerComponent={{text: 'REGISTER NEW ACCOUNT', style: { color: '#fff', fontSize: 20 }}}
           />
-          <Text>Email: </Text>
-          <TextInput
-            onChangeText={(email) => this.setState({email})}
-            value={this.state.email}
-            secureTextEntry={true}
-          />
-          <Text>Password: </Text>
-          <TextInput
-            onChangeText={(password) => this.setState({password})}
-            value={this.state.password}
-            secureTextEntry={true}
-          />
-          <Text>First name: </Text>
-          <TextInput
-            onChangeText={(firstname) => this.setState({firstname})}
-            value={this.state.firstname}
-            secureTextEntry={true}
-          />
-          <Text>Last name: </Text>
-          <TextInput
-            onChangeText={(lastname) => this.setState({lastname})}
-            value={this.state.lastname}
-            secureTextEntry={true}
-          />
-          <TouchableOpacity 
-            style={styles.button}
-            onPress={this.registerUser}
-          >
-            <Text>Register</Text>
-          </TouchableOpacity>
+          <View>
+            <FormLabel>First Name:</FormLabel>
+            <FormInput onChangeText={(firstname) => this.setState({firstname})}/>
+            <FormLabel>Last Name:</FormLabel>
+            <FormInput onChangeText={(lastname) => this.setState({lastname})}/>
+            <FormLabel>Email:</FormLabel>
+            <FormInput onChangeText={(email) => this.setState({email})}/>
+            <FormLabel>Username</FormLabel>
+            <FormInput onChangeText={(username) => this.setState({username})}/>
+            <FormLabel>Password:</FormLabel>
+            <FormInput onChangeText={(password) => this.setState({password})} secureTextEntry={true}/>
+            <FormLabel>Confirm Password:</FormLabel>
+            <FormInput onChangeText={(confirm) => this.setState({confirm})} secureTextEntry={true}/>
+            <TouchableOpacity 
+              style={styles.button}
+              onPress={this.registerUser}
+            >
+              <Text>REGISTER</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     );
@@ -97,13 +92,14 @@ class RegisterPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10
+    flexDirection: 'column',
+    backgroundColor: '#F5FCFF',
   },
   button: {
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
-    padding: 10
+    padding: 10,
+    margin: 4
   },
   countContainer: {
     alignItems: 'center',
@@ -111,6 +107,13 @@ const styles = StyleSheet.create({
   },
   countText: {
     color: '#FF00FF'
+  },
+  titleRegister: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+    fontSize: 20,
+    marginTop: 10
   }
 })
 

@@ -8,13 +8,15 @@ import {
   TextInput,
   AsyncStorage,
   Alert,
-  FlatList
+  FlatList,
+  TouchableHighlight
 } from 'react-native'
 import { Icon, Header } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllPosts } from '../store/post/post.action'
 import HomePost  from '../components/HomePosts'
+
 
 class HomePage extends Component {
 
@@ -34,14 +36,13 @@ class HomePage extends Component {
   }
   
   async logoutUser() {
-    const self = this;
     try {
       await AsyncStorage.removeItem('token')
       Alert.alert('Success', 'Logout Success')
-      self.props.navigation.navigate('Login')
     } catch (error) {
       console.log(error)
     }
+    this.props.navigation.navigate('Login')
   }
 
   async showToken() {
@@ -53,19 +54,25 @@ class HomePage extends Component {
     }
   }
 
-  addNewPost () {
-    this.props.navigation.push('Image')
-  }
-
   render() {
     if (this.props.data.post.posts.length === 0) {
       return (
-        <View>
+        <View style={styles.container}>
           <Header
             leftComponent={{ icon: 'menu', color: '#fff'}}
-            rightComponent={{ icon: 'add', color: '#fff', onPress: () => this.addNewPost }}
+            rightComponent={{ icon: 'add', color: '#fff', onPress: () => this.props.navigation.push('AddPost') }}
           />
           <Text style={styles.welcome}>No Post have been found. Add new post!</Text>
+          <View style={styles.footer}>
+            <TouchableHighlight style={styles.bottomButtons}>
+              <Icon 
+                name='sign-out'
+                type='font-awesome'
+                color='black'
+                onPress={this.logoutUser}
+              />
+            </TouchableHighlight>
+          </View>
         </View>
       );
     } else {
@@ -82,6 +89,9 @@ class HomePage extends Component {
               ))}
             </View>
           </FlatList>
+          <View>
+            <Text>This is footer</Text>
+          </View>
         </View>
       );
     }
@@ -91,8 +101,7 @@ class HomePage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'column',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
@@ -100,6 +109,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
     fontWeight: 'bold'
+  },
+  footer: {
+    position: 'absolute',
+    flex:0.1,
+    left: 0,
+    right: 0,
+    bottom: -10,
+    backgroundColor:'#6EE9FF',
+    flexDirection:'row',
+    height:80,
+    alignItems:'center',
+  },
+  bottomButtons: {
+    alignItems:'center',
+    justifyContent: 'center',
+    flex:1,
   },
 });
 

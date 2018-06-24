@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, DrawerNavigator, DrawerItems } from 'react-navigation'
 import { Provider } from 'react-redux';
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import ProfilePage from './pages/ProfilePage'
 import RegisterPage from './pages/RegisterPage'
+import AddPostPage from './pages/AddPostPage'
 import store from './store'
 
 const RootStack = createStackNavigator (
   {
-    Login: {screen: LoginPage},
+    Login: LoginPage,
     Home: HomePage,
     Profile: ProfilePage,
     Register: RegisterPage,
+    AddPost: AddPostPage
   },
   {
     initialRouteName: 'Login',
