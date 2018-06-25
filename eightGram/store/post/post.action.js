@@ -84,6 +84,21 @@ export const addComment = (postData) => {
     }
 }
 
+export const deletePost = (postData) => {
+    return dispatch => {
+        axios.delete(`http://ec2-18-222-146-189.us-east-2.compute.amazonaws.com/post/${postData.id}`, {
+            headers: { token: postData.token }
+        })
+        .then(function(response) {
+            dispatch(getAllPosts())
+            Alert.alert('Success', response.data.message)
+        })
+        .catch(function(err) {
+            Alert.alert('Error', 'error while deleting post. Please try again!')
+        })
+    }
+}
+
 export const setImageInStore = (imageData) => ({
     type: 'SET_IMAGE',
     payload: imageData

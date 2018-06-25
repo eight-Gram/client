@@ -24,9 +24,10 @@ class RegisterPage extends Component {
     }
   }
 
-  async setToken (token) {
+  async setStorage (data) {
     try {
-      await AsyncStorage.setItem('token', token)
+      await AsyncStorage.setItem('token', data.token)
+      await AsyncStorage.setItem('userId', data.response._id)
     } catch (error) {
       console.log(error)      
     }
@@ -46,7 +47,7 @@ class RegisterPage extends Component {
       })
       .then(function(response) {
           Alert.alert('Success', response.data.message)
-          self.setToken(response.data.token)
+          self.setStorage(response.data)
           self.props.navigation.navigate('Home')
       })
       .catch(function(err) {

@@ -42,7 +42,7 @@ class LoginPage extends Component {
       password: loginData.password
     })
     .then(function(response) {
-      self.setToken(response.data.token)
+      self.setStorage(response.data)
       Alert.alert('Login Success', response.data.message)
       self.props.navigation.navigate('Home')
     })
@@ -51,9 +51,10 @@ class LoginPage extends Component {
     })
   }
 
-  async setToken (token) {
+  async setStorage (data) {
     try {
-      await AsyncStorage.setItem('token', token)
+      await AsyncStorage.setItem('token', data.token)
+      await AsyncStorage.setItem('userId', data.id)
     } catch (error) {
       console.log(error)
     }
