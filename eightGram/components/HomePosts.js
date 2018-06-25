@@ -6,22 +6,25 @@ import {
     View,
     Alert,
     Image,
-    TouchableHighlight,
+    TouchableOpacity,
     FlatList,
     AsyncStorage
 } from 'react-native';
-import { Icon } from 'react-native-elements'
-import OptionButtons from './OptionButtons'
+import { Icon } from 'react-native-elements';
+import OptionButtons from './OptionButtons';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setPostId } from '../store/post/post.action'
 
 class HomePosts extends Component {
+  setForViewComment = () => {
+    this.props.setPostId(this.props.post._id)
+    this.props.navigation.navigate('CommentPage')
+  }
+
   render() {
-    const borderStyle = {
-      borderBottomColor: 'black',
-      borderWidth: 2
-    }
-    console.log(this.props.post.comments)
     return (
-      <View style={[styles.vertical, borderStyle]}>
+      <View style={[styles.vertical, styles.containerBorder]}>
         <View style={styles.viewText}>
           <Text style={{fontSize: 15, fontWeight: 'bold', marginLeft: 10, marginTop: 10}}>{this.props.post.userId.username}</Text>
         </View>
@@ -36,16 +39,11 @@ class HomePosts extends Component {
           <Text style={{fontSize: 20, marginLeft: 10, marginTop: 10}}>{this.props.post.description}</Text>
         </View>
           <View style={styles.verticalComment}>
-          <FlatList
-            data={this.props.post.comments}
-            keyExtractor={(comment) => 'comment' + comment._id}
-            renderItem={(comment) =>
-              <View style={[styles.horizontal, styles.viewText]}>
-                <Text style={{fontWeight: 'bold', paddingRight: 5}}>{comment.item.username}</Text>
-                <Text>{comment.item.comment_text}</Text>
-              </View>
-            }
-          />
+          {this.props.post.comments.length !== 0 && 
+            <TouchableOpacity style={styles.button} onPress={ this.setForViewComment }>
+              <Text style={{color: 'grey'}}>Read Comments {this.props.post.comments.length}</Text>
+            </TouchableOpacity>
+          }
           </View>
       </View>
     );
@@ -57,6 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
     backgroundColor: 'white'
+  },
+  containerBorder: {
+    borderBottomColor: 'black',
+    borderWidth: 2
   },
   verticalComment: {
     flex: 0.1,
@@ -85,6 +87,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: 2
   },
+  button: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 10,
+    margin: 4
+  },
   optionButtonStyle: {
     borderWidth: 2
   },
@@ -93,4 +101,12 @@ const styles = StyleSheet.create({
   }
 })
 
-export default HomePosts;
+const mapStateToProps = (state) => {
+  return { data: state }
+}
+
+const mapDispatchToProps = (dispatch) => bindActionCreators ({
+  setPostId,
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePosts);

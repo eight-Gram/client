@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage'
 import AddPostPage from './pages/AddPostPage'
 import UploadImagePage from './pages/UploadImage'
 import AddCommentPage from './pages/AddCommentPage'
+import CommentPage from './pages/CommentPage'
 import store from './store'
 
 const RootStack = createStackNavigator (
@@ -18,7 +19,8 @@ const RootStack = createStackNavigator (
     Register: RegisterPage,
     AddPost: AddPostPage,
     Upload: UploadImagePage,
-    Comment: AddCommentPage
+    Comment: AddCommentPage,
+    CommentPage: CommentPage
   },
   {
     initialRouteName: 'Login',
