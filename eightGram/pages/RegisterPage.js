@@ -32,7 +32,7 @@ class RegisterPage extends Component {
     }
   }
 
-  registerUser() {
+  registerUser = () => {
     let self = this
     if (this.state.password !== this.state.confirm) {
       Alert.alert('Warning', 'Password and confirm password is not the same')
@@ -80,7 +80,13 @@ class RegisterPage extends Component {
               style={styles.button}
               onPress={this.registerUser}
             >
-              <Text>REGISTER</Text>
+              <Text style={{fontWeight:'bold'}}>REGISTER</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={() => this.props.navigation.goBack()}
+            >
+              <Text style={{color: 'white', fontWeight:'bold'}}>CANCEL</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -93,11 +99,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#F5FCFF',
   },
   button: {
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
+    padding: 10,
+    margin: 4
+  },
+  backButton: {
+    alignItems: 'center',
+    backgroundColor: 'red',
     padding: 10,
     margin: 4
   },

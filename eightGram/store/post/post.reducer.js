@@ -1,7 +1,9 @@
 const initialState = {
     posts: [],
     imageUrl: 'No Image',
-    image: ''
+    image: '',
+    loading: false,
+    postId: ''
 }
 
 const post = (state = {...initialState}, action) => {
@@ -20,6 +22,15 @@ const post = (state = {...initialState}, action) => {
                 imageUrl: 'No Image',
                 image: ''
             })
+        }
+        case 'LOADING_DATA': {
+            return ({ ...state, loading: true })
+        }
+        case 'LOADING_DATA_DONE': {
+            return({ ...state, loading: false })
+        }
+        case 'SET_POST_ID': {
+            return ({...state, postId:action.payload})
         }
         default:
             return state;

@@ -8,14 +8,15 @@ import {
   TextInput,
   AsyncStorage,
   Alert,
-  FlatList,
-  TouchableHighlight
+  TouchableHighlight,
+  ScrollView,
+  ActivityIndicator
 } from 'react-native'
 import { Icon, Header } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getAllPosts } from '../store/post/post.action'
-import HomePost  from '../components/HomePosts'
+import HomePosts from '../components/HomePosts'
 
 class HomePage extends Component {
 
@@ -49,8 +50,25 @@ class HomePage extends Component {
   }
 
   render() {
-    console.log(this.props.data.post)
-    if (this.props.data.post.posts.length === 0) {
+    if (this.props.data.post.loading) {
+      return (
+        <View style={styles.container}>
+          <Header
+            leftComponent={<TouchableHighlight onPress={this.logoutUser}>
+                          <Icon
+                            name='sign-out'
+                            type='font-awesome'
+                            color='white'
+                          />
+                          </TouchableHighlight>
+            }
+            centerComponent={{text: 'HOME', style: { color: 'white', fontSize: 18, fontWeight: 'bold' }}}
+            rightComponent={{ icon: 'add', color: '#fff', onPress: () => this.props.navigation.push('AddPost') }}
+          />
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )
+    } else if (this.props.data.post.posts.length === 0) {
       return (
         <View style={styles.container}>
           <Header
@@ -70,7 +88,7 @@ class HomePage extends Component {
       );
     } else {
       return (
-        <View>
+        <View style={{flex: 1}}>
           <Header
             leftComponent={<TouchableHighlight onPress={this.logoutUser}>
                           <Icon
@@ -83,16 +101,13 @@ class HomePage extends Component {
             centerComponent={{text: 'HOME', style: { color: 'white', fontSize: 18, fontWeight: 'bold' }}}
             rightComponent={{ icon: 'add', color: '#fff', onPress: () => this.props.navigation.push('AddPost') }}
           />
-          <FlatList>
+          <ScrollView>
             <View>
-              { this.props.data.post.posts.map((post, index) => (
-                <HomePost post={post} key={'post' + index}/>
-              ))}
+            { this.props.data.post.posts.map((post, index) => (
+              <HomePosts navigation={this.props.navigation} post={post} key={'post' + index}/>
+            ))}
             </View>
-          </FlatList>
-          <View>
-            <Text>This is footer</Text>
-          </View>
+          </ScrollView>
         </View>
       );
     }
@@ -126,6 +141,11 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent: 'center',
     flex:1,
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap'
   },
 });
 
