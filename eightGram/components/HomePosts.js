@@ -7,6 +7,7 @@ import {
     Alert,
     Image,
     TouchableHighlight,
+    FlatList,
     AsyncStorage
 } from 'react-native';
 import { Icon } from 'react-native-elements'
@@ -18,6 +19,7 @@ class HomePosts extends Component {
       borderBottomColor: 'black',
       borderWidth: 2
     }
+    console.log(this.props.post.comments)
     return (
       <View style={[styles.vertical, borderStyle]}>
         <View style={styles.viewText}>
@@ -33,14 +35,18 @@ class HomePosts extends Component {
           <Text style={{fontWeight: 'bold', fontSize: 20, marginLeft: 10, marginTop: 10 }}>{this.props.post.userId.username}</Text>
           <Text style={{fontSize: 20, marginLeft: 10, marginTop: 10}}>{this.props.post.description}</Text>
         </View>
-        <View style={styles.vertical}>
-          {this.props.post.comments.map((comment, index) => (
-            <View key={'comment'+index} style={[styles.horizontal, styles.viewText]}>
-              <Text style={{fontWeight: 'bold', paddingRight: 5}}>{comment.username}</Text>
-              <Text>{comment.comment_text}</Text>
-            </View>
-          ))}
-        </View>
+          <View style={styles.verticalComment}>
+          <FlatList
+            data={this.props.post.comments}
+            keyExtractor={(comment) => 'comment' + comment._id}
+            renderItem={(comment) =>
+              <View style={[styles.horizontal, styles.viewText]}>
+                <Text style={{fontWeight: 'bold', paddingRight: 5}}>{comment.item.username}</Text>
+                <Text>{comment.item.comment_text}</Text>
+              </View>
+            }
+          />
+          </View>
       </View>
     );
   }
@@ -49,6 +55,11 @@ class HomePosts extends Component {
 const styles = StyleSheet.create({
   vertical: {
     justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundColor: 'white'
+  },
+  verticalComment: {
+    flex: 0.1,
     flexDirection: 'column',
     backgroundColor: 'white'
   },
