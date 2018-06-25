@@ -28,8 +28,10 @@ class OptionButtons extends Component {
 
   likePost = () => {
     let postData = {
-      id: this.props.post._id,
-      token: this.state.token
+      postId: this.props.post._id,
+      userId: this.state.userId,
+      token: this.state.token,
+      posts: this.props.data.post.posts
     }
     if (this.props.post.likes.includes(this.state.userId)) {
       this.props.unlikePost(postData)

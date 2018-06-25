@@ -10,7 +10,7 @@ import {
   Alert,
   TouchableHighlight,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native'
 import { Icon, Header } from 'react-native-elements'
 import { connect } from 'react-redux';
@@ -45,8 +45,16 @@ class HomePage extends Component {
   }
 
   logoutUser = () => {
-    this.removeToken()
-    this.props.navigation.goBack()
+    Alert.alert('Warning', 'Are you sure you want to logout?', 
+      [
+        { text: 'Cancel' },
+        { text: 'OK', onPress: () => {
+          this.removeToken()
+          this.props.navigation.goBack()
+        }}
+      ], 
+      { cancelable: false }
+    )
   }
 
   render() {

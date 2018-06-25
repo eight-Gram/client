@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Alert } from 'react-native'
+import { ToastAndroid, Alert } from 'react-native'
 
 export const getAllPosts = () => {
     return dispatch => {
@@ -27,7 +27,7 @@ export const addPost = (postData) => {
             }
         })
         .then(function(response) {
-            console.log(response)
+            ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
             dispatch(resetUpload())
             dispatch(getAllPosts())
         })
@@ -39,29 +39,44 @@ export const addPost = (postData) => {
 
 export const likePost = (postData) => {
     return dispatch => {
-        console.log(postData.id)
-        axios.put(`http://ec2-18-222-146-189.us-east-2.compute.amazonaws.com/post/like/${postData.id}`, {}, {
+        axios.put(`http://ec2-18-222-146-189.us-east-2.compute.amazonaws.com/post/like/${postData.postId}`, {}, {
             headers: { token: postData.token }
         })
         .then(function(response) {
-            dispatch(getAllPosts())
+            postData.posts.map(post => {
+                if (post._id === postData.postId) {
+                    post.likes.push(postData.userId)
+                }
+            })
+            ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
+            dispatch(setPosts(postData.posts))
         })
         .catch(function(err) {
             Alert.alert('Error', 'Error when liking a post')
+            console.log(err)
         })
     }
 }
 
 export const unlikePost = (postData) => {
+    console.log('masuk')
     return dispatch => {
-        axios.put(`http://ec2-18-222-146-189.us-east-2.compute.amazonaws.com/post/unlike/${postData.id}`, {}, {
+        axios.put(`http://ec2-18-222-146-189.us-east-2.compute.amazonaws.com/post/unlike/${postData.postId}`, {}, {
             headers: { token: postData.token }
         })
         .then(function(response) {
-            dispatch(getAllPosts())
+            console.log(postData.posts)
+            postData.posts.map (post => {
+                if (post._id === postData.postId) {
+                    post.likes.splice(post.likes.indexOf(postData.userId), 1)
+                }
+            })
+            ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
+            dispatch(setPosts(postData.posts))
         })
         .catch(function(err) {
             Alert.alert('Error', 'Error when unlike a post')
+            console.log(err)
         })
     }
 }
@@ -75,7 +90,7 @@ export const addComment = (postData) => {
         })
         .then(function(response) {
             dispatch(getAllPosts())
-            Alert.alert('Success', response.data.message)
+            ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
         })
         .catch(function(err) {
             Alert.alert('Error', 'Error while posting comment. Try again!')
@@ -91,7 +106,7 @@ export const deletePost = (postData) => {
         })
         .then(function(response) {
             dispatch(getAllPosts())
-            Alert.alert('Success', response.data.message)
+            ToastAndroid.show(response.data.message, ToastAndroid.SHORT)
         })
         .catch(function(err) {
             Alert.alert('Error', 'error while deleting post. Please try again!')
